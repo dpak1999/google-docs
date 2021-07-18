@@ -6,11 +6,48 @@ import Icon from "@material-tailwind/react/Icon";
 import Image from "next/image";
 import { getSession, useSession } from "next-auth/client";
 import Login from "../components/Login";
+import Modal from "@material-tailwind/react/Modal";
+import ModalBody from "@material-tailwind/react/ModalBody";
+import ModalFooter from "@material-tailwind/react/ModalFooter";
+import { useState } from "react";
 
 export default function Home() {
   const [session] = useSession();
+  const [showModal, setShowModal] = useState(false);
+  const [input, setInput] = useState("");
 
   if (!session) return <Login />;
+
+  const createDocument = () => {};
+
+  const modal = (
+    <Modal size="sm" active={showModal} toggler={() => setShowModal(false)}>
+      <ModalBody>
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          type="text"
+          className="outline-none w-full"
+          placeholder="Enter name of document"
+          onKeyDown={(e) => e.key === "Enter" && createDocument()}
+        />
+      </ModalBody>
+      <ModalFooter>
+        <Button
+          color="blue"
+          buttonType="link"
+          ripple="dark"
+          onClick={(e) => setShowModal(false)}
+        >
+          Cancel
+        </Button>
+        <Button color="blue" ripple="light" onClick={createDocument}>
+          Create
+        </Button>
+      </ModalFooter>
+    </Modal>
+  );
+
   return (
     // flex flex-col items-center justify-center min-h-screen py-2
     <div className="">
@@ -20,6 +57,7 @@ export default function Home() {
       </Head>
 
       <Header />
+      {modal}
 
       <section className="bg-[#F8F9FA] pb-10 px-10">
         <div className="max-w-3xl mx-auto">
@@ -37,7 +75,10 @@ export default function Home() {
             </Button>
           </div>
           <div>
-            <div className="relative h-52 w-40 border-2 cursor-pointer hover:border-blue-700">
+            <div
+              onClick={() => setShowModal(true)}
+              className="relative h-52 w-40 border-2 cursor-pointer hover:border-blue-700"
+            >
               <Image src="https://links.papareact.com/pju" layout="fill" />
             </div>
             <p className="ml-2 mt-2 font-semibold text-sm text-gray-700">
